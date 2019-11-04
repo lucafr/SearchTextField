@@ -82,7 +82,9 @@ open class SearchTextField: UITextField {
     
     /// Set your custom set of attributes in order to highlight the string found in each item
     open var highlightAttributes: [NSAttributedString.Key: AnyObject] = [.font: UIFont.boldSystemFont(ofSize: 10)]
-    
+    open var subtitleHighlightAttributes: [NSAttributedString.Key: AnyObject] = [.font: UIFont.boldSystemFont(ofSize: 10)]
+
+
     /// Start showing the default loading indicator, useful for searches that take some time.
     open func showLoadingIndicator() {
         self.rightViewMode = .always
@@ -457,7 +459,7 @@ open class SearchTextField: UITextField {
                     item.attributedSubtitle = NSMutableAttributedString(string: (item.subtitle != nil ? item.subtitle! : ""), attributes: subTitleAttributes)
 
                     if subtitleFilterRange.location != NSNotFound {
-                        item.attributedSubtitle!.setAttributes(highlightAttributesForSubtitle(), range: subtitleFilterRange)
+                        item.attributedSubtitle!.setAttributes(subtitleHighlightAttributes, range: subtitleFilterRange)
                     }
                     
                     filteredResults.append(item)
@@ -496,23 +498,7 @@ open class SearchTextField: UITextField {
         filteredResults.removeAll()
         tableView?.removeFromSuperview()
     }
-    
-    // Look for Font attribute, and if it exists, adapt to the subtitle font size
-    fileprivate func highlightAttributesForSubtitle() -> [NSAttributedString.Key: AnyObject] {
-        var highlightAttributesForSubtitle = [NSAttributedString.Key: AnyObject]()
-        
-        for attr in highlightAttributes {
-            if attr.0 == NSAttributedString.Key.font {
-                let fontName = (attr.1 as! UIFont).fontName
-                let pointSize = (attr.1 as! UIFont).pointSize * fontConversionRate
-                highlightAttributesForSubtitle[attr.0] = UIFont(name: fontName, size: pointSize)
-            } else {
-                highlightAttributesForSubtitle[attr.0] = attr.1
-            }
-        }
-        
-        return highlightAttributesForSubtitle
-    }
+
     
     // Handle inline behaviour
     func handleInlineFiltering() {
