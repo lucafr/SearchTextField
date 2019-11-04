@@ -9,7 +9,6 @@
 import UIKit
 
 open class SearchTextField: UITextField {
-    
     ////////////////////////////////////////////////////////////////////////
     // Public interface
     
@@ -450,10 +449,13 @@ open class SearchTextField: UITextField {
                 
                 if titleFilterRange.location != NSNotFound || subtitleFilterRange.location != NSNotFound || addAll {
                     item.attributedTitle = NSMutableAttributedString(string: item.title)
-                    item.attributedSubtitle = NSMutableAttributedString(string: (item.subtitle != nil ? item.subtitle! : ""))
-                    
                     item.attributedTitle!.setAttributes(highlightAttributes, range: titleFilterRange)
-                    
+
+
+                    let subTitleAttributes = [ NSAttributedString.Key.foregroundColor: self.theme.subtitleFontColor,
+                                             NSAttributedString.Key.font: self.theme.subtileFont]
+                    item.attributedSubtitle = NSMutableAttributedString(string: (item.subtitle != nil ? item.subtitle! : ""), attributes: subTitleAttributes)
+
                     if subtitleFilterRange.location != NSNotFound {
                         item.attributedSubtitle!.setAttributes(highlightAttributesForSubtitle(), range: subtitleFilterRange)
                     }
@@ -619,9 +621,10 @@ public struct SearchTextFieldTheme {
     public var font: UIFont
     public var fontColor: UIColor
     public var subtitleFontColor: UIColor
+    public var subtileFont: UIFont
     public var placeholderColor: UIColor?
     
-    init(cellHeight: CGFloat, bgColor:UIColor, borderColor: UIColor, separatorColor: UIColor, font: UIFont, fontColor: UIColor, subtitleFontColor: UIColor? = nil) {
+  init(cellHeight: CGFloat, bgColor:UIColor, borderColor: UIColor, separatorColor: UIColor, font: UIFont, fontColor: UIColor, subtileFont: UIFont? = nil, subtitleFontColor: UIColor? = nil) {
         self.cellHeight = cellHeight
         self.borderColor = borderColor
         self.separatorColor = separatorColor
@@ -629,6 +632,7 @@ public struct SearchTextFieldTheme {
         self.font = font
         self.fontColor = fontColor
         self.subtitleFontColor = subtitleFontColor ?? fontColor
+        self.subtileFont = subtileFont ?? font
     }
     
     public static func lightTheme() -> SearchTextFieldTheme {
